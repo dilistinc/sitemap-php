@@ -26,9 +26,9 @@ class Sitemap {
 	private $filename = 'sitemap';
 	private $current_item = 0;
 	private $current_sitemap = 0;
+    private $schema;
 
 	const EXT = '.xml';
-	const SCHEMA = 'http://www.sitemaps.org/schemas/sitemap/0.9';
 	const DEFAULT_PRIORITY = 0.5;
 	const ITEM_PER_SITEMAP = 50000;
 	const SEPERATOR = '-';
@@ -37,9 +37,11 @@ class Sitemap {
 	/**
 	 *
 	 * @param string $domain
+	 * @param string $schema
 	 */
-	public function __construct($domain) {
+	public function __construct($domain, $schema = 'http://www.sitemaps.org/schemas/sitemap/0.9') {
 		$this->setDomain($domain);
+		$this->schema = $schema;
 	}
 
 	/**
@@ -167,7 +169,7 @@ class Sitemap {
 		$this->getWriter()->startDocument('1.0', 'UTF-8');
 		$this->getWriter()->setIndent(true);
 		$this->getWriter()->startElement('urlset');
-		$this->getWriter()->writeAttribute('xmlns', self::SCHEMA);
+		$this->getWriter()->writeAttribute('xmlns', $this->schema);
 	}
 
 	/**
@@ -239,7 +241,7 @@ class Sitemap {
 		$indexwriter->startDocument('1.0', 'UTF-8');
 		$indexwriter->setIndent(true);
 		$indexwriter->startElement('sitemapindex');
-		$indexwriter->writeAttribute('xmlns', self::SCHEMA);
+		$indexwriter->writeAttribute('xmlns', $this->schema);
 		for ($index = 0; $index < $this->getCurrentSitemap(); $index++) {
 			$indexwriter->startElement('sitemap');
 			$indexwriter->writeElement('loc', $loc . $this->getFilename() . ($index ? self::SEPERATOR . $index : '') . self::EXT);
